@@ -1,0 +1,131 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 5
+
+int main() {
+    char productos[MAX][30];
+    int cantidades[MAX];
+    float tiempo[MAX];
+    float recursos[MAX];
+    int totalProductos = 0;
+    float tiempoDisponible = 500;
+    float recursosDisponibles = 300;
+    int opcion;
+    int i, j;
+    char buscar[30];
+    do {
+        printf("\n===== MENU =====\n");
+        printf("1. Ingresar productos\n");
+        printf("2. Mostrar productos\n");
+        printf("3. Editar producto\n");
+        printf("4. Eliminar producto\n");
+        printf("5. Calcular produccion\n");
+        printf("6. Salir\n");
+        printf("Seleccione una opcion: ");
+        scanf("%d", &opcion);
+        switch(opcion) {
+            case 1:
+                if(totalProductos >= MAX) {
+                    printf("\nNo se pueden ingresar más productos.\n");
+                    break;
+                }
+                printf("\nIngrese nombre del producto: ");
+                scanf("%s", productos[totalProductos]);
+                printf("Ingrese cantidad demandada: ");
+                scanf("%d", &cantidades[totalProductos]);
+                printf("Ingrese tiempo de fabricacion por unidad: ");
+                scanf("%f", &tiempo[totalProductos]);
+                printf("Ingrese recursos por unidad: ");
+                scanf("%f", &recursos[totalProductos]);
+                totalProductos++;
+                break;
+            case 2:
+                printf("\n=== LISTA DE PRODUCTOS ===\n");
+                for(i = 0; i < totalProductos; i++) {
+                    printf("\nProducto: %s", productos[i]);
+                    printf("\nCantidad: %d", cantidades[i]);
+                    printf("\nTiempo: %.2f", tiempo[i]);
+                    printf("\nRecursos: %.2f\n", recursos[i]);
+                }
+                break;
+            case 3:
+                printf("\nIngrese nombre del producto a editar: ");
+                scanf("%s", buscar);
+                for(i = 0; i < totalProductos; i++) {
+                    int igual = 1;
+                    for(j = 0; productos[i][j] != '\0' || buscar[j] != '\0'; j++) {
+                        if(productos[i][j] != buscar[j]) {
+                            igual = 0;
+                            break;
+                        }
+                    }
+                    if(igual) {
+                        printf("Nuevo nombre: ");
+                        scanf("%s", productos[i]);
+                        printf("Nueva cantidad: ");
+                        scanf("%d", &cantidades[i]);
+                        printf("Nuevo tiempo: ");
+                        scanf("%f", &tiempo[i]);
+                        printf("Nuevos recursos: ");
+                        scanf("%f", &recursos[i]);
+                        printf("\nProducto editado correctamente.\n");
+                        break;
+                    }
+                }
+                if(i == totalProductos) {
+                    printf("\nProducto no encontrado.\n");
+                }
+                break;
+            case 4:
+                printf("\nIngrese nombre del producto a eliminar: ");
+                scanf("%s", buscar);
+                for(i = 0; i < totalProductos; i++) {
+                    int igual = 1;
+                    for(j = 0; productos[i][j] != '\0' || buscar[j] != '\0'; j++) {
+                        if(productos[i][j] != buscar[j]) {
+                            igual = 0;
+                            break;
+                        }
+                    }
+                    if(igual) {
+                        for(j = i; j < totalProductos - 1; j++) {
+                            strcpy(productos[j], productos[j + 1]);
+                            cantidades[j] = cantidades[j + 1];
+                            tiempo[j] = tiempo[j + 1];
+                            recursos[j] = recursos[j + 1];
+                        }
+                        totalProductos--;
+                        printf("\nProducto eliminado correctamente.\n");
+                        break;
+                    }
+                }
+                if(i == totalProductos) {
+                    printf("\nProducto no encontrado.\n");
+                }
+                break;
+            case 5: {
+                float totalTiempo = 0, totalRecursos = 0;
+                for(i = 0; i < totalProductos; i++) {
+                    totalTiempo += cantidades[i] * tiempo[i];
+                    totalRecursos += cantidades[i] * recursos[i];
+                }
+                printf("\n===== RESULTADOS =====\n");
+                printf("Tiempo total requerido: %.2f\n", totalTiempo);
+                printf("Recursos totales requeridos: %.2f\n", totalRecursos);
+                if(totalTiempo <= tiempoDisponible && totalRecursos <= recursosDisponibles) {
+                    printf("La fabrica SI puede cumplir con la demanda.\n");
+                } else {
+                    printf("La fabrica NO puede cumplir con la demanda.\n");
+                }
+                break;
+            }
+            case 6:
+                printf("\nPrograma finalizado.\n");
+                break;
+            default:
+                printf("\nOpcion invalida.\n");
+        }
+    } while(opcion != 6);
+    return 0;
+}
